@@ -1,0 +1,17 @@
+---
+title: "metadata"
+author: "Miguel Ferrando León"
+date: "2024-11-04"
+output: html_document
+---
+
+En este documento R Markdown vamos a guardar nuestros metadatos para luego subirlos a nuestro repositorio de github:
+
+```{r}
+metaboinfo <- read.csv("/Users/miguelferrando/Downloads/DataInfo_S013.csv")
+```
+
+```{r}
+metaboinfo
+```
+

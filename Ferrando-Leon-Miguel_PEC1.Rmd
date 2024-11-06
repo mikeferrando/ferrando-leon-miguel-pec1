@@ -1,0 +1,117 @@
+---
+title: "Ferrando-León-Miguel-PEC1"
+author: "Miguel Ferrando León"
+date: "2024-10-30"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+En primer lugar, descargamos unos datos desde el repositorio de github proporcionado. Para ello, accedemos a la carpeta "datasets" y nos dirigimos a la subcarpeta que nos interesa "2018-MetabotypingPaper". De ahí descargamos tanto los datos (DataValues_S013.csv), como los metadatos (DataInfo_S013.csv).
+
+A continuación, insertamos y definimos los dos archivos de datos en mi script de R: 
+
+```{r}
+metabodata <- read.csv("/Users/miguelferrando/Downloads/DataValues_S013.csv")
+metaboinfo <- read.csv("/Users/miguelferrando/Downloads/DataInfo_S013.csv")
+```
+
+Es preferible ajustar la matriz de metabolitos para quedarme solo con las columnas que continenen los valores numéricos. También la trasponemos para cambiar filas por columnas y así ponemos los valores metabolómicos y sus tiempos como filas y los diferentes pacientes como columnas:
+
+```{r}
+datavalues <- t(metabodata[, 7:dim(metabodata)[2]])
+```
+
+Con head, imprimimos la tabla para ver de manera sintetizada cómo ha quedado:
+
+```{r}
+head(datavalues)
+```
+Luego creamos un nuevo objeto desde el mismo dataset metabodata, para separar y aglutinar las columnas donde tenemos información complementaria como el género, el tipo de cirugía, etc. En paralelo, reducimos la matriz de metadatos metaboinfo para borrar duplicados. Gracias a estOs ajustes, podemos insertar todo de manera ordenada en el contenedor. Por tanto ajustamos y comprobamos las tablas:
+
+```{r}
+coldata <- metabodata [,2:6]
+rowdata <- metaboinfo [6:dim(metaboinfo)[1], 2:dim(metaboinfo)[2]]
+
+head(coldata)
+head(rowdata)
+```
+Antes de crear el contenedor, definimos el objeto SummarizedExperiment cargando la librería en cuestión:
+
+```{r}
+library(SummarizedExperiment)
+```
+
+Ahora creamos el contenedor SummarizedExperiment con los datos y metadatos como se pide en el ejercicio:
+
+```{r}
+se <- SummarizedExperiment(assays = list(datavalues), colData = coldata, rowData = rowdata)
+```
+
+Llamamos a class para comprobar nuestro contenedor:
+
+```{r}
+class(se)
+```
+
+Ahora procedemos con una exploración general de los datos para hacernos una idea superficial de lo que tenemos y así poder realizar posteriormente un análisis con más detalle.
+
+Comenzamos con una medida de la dimensionalidad de la matriz de datos con la que vamos a trabajar:
+
+```{r}
+dim(datavalues)
+```
+
+Repetimos head como parte de nuestro trabajo exploratorio para ver las 6 primeras filas:
+
+```{r}
+head(datavalues)
+```
+
+Continuamos con la exploración de los metadatos también, para ver información adicional sobre nuestros datos metabolómicos. Primero vemos los nombres de las columnas de coldata:
+
+```{r}
+colnames(coldata)
+```
+
+Y de rowdata:
+
+```{r}
+colnames(rowdata)
+```
+
+Seguimos investigando y ahora cuantificamos metabolitos con la función length, y para obtener el número total real dividimos la cantidad total por los 5 tiempos de muestreo:
+
+```{r}
+length(datavalues)
+```
+
+Finalmente terminamos con un summary para ver los principales estadísticos descriptivos como el mínimo, máximo, cuartiles y promedio para cada paciente:
+
+```{r}
+summary(datavalues)
+```
+Toda esta información que hemos obtenido nos sirve como paso inicial para ver rápidamente qué tenemos entre manos y resumir las características principales de nuestros datos. Todo ello nos ayudará a planificar los próximos pasos donde tendremos que indagar mucho más para poder sacar conclusiones válidas y poder responder a nuestra pregunta biológica: Determinar la influencia de la cirugía bariátrica en el metabolismo de los pacientes.
+
+Para terminar, creamos un repositorio de github donde almacenar todos los datos y el contenedor, así como un informe con todo el procedimiento realizado anteriormente. Los pasos a seguir para constituir un repositorio y almacenar nuestro proyecto son los siguientes:
+
+1. Registro con cuenta propia (Username: mikeferrando).
+2. Creación de repositorio: Home > New > New Repository.
+3. Asignación de nombre: ferrando-leon-miguel-pec1.
+4. Carga de archivos: Add File.
+
+He empezado subiendo los datos crudos en formato de texto .csv, además de los metadatos en Rmd, el informe y el códdigo en R markdown.
+
+Para guardar el objeto contenedor de los datos y los metadatos en formato binario .Rda, utilizamos la función save para cada objeto:
+```{r}
+save(se, file = "se.rda")
+```
+
+```{r}
+save(metaboinfo, file = "metaboinfo.rda")
+```
+
+Después subiremos directamente estos archivos restantes a nuestro respositorio de github, que se puede acceder mediante el siguiente link:
+
+https://github.com/mikeferrando/ferrando-leon-miguel-pec1
